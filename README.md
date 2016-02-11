@@ -1,4 +1,6 @@
-# pixi-spine
+# WORK IN PROGRESS
+
+# pixi-alpha-map
 
 A sprite that uses two separate images for color and transparency for pixi v3
 
@@ -28,9 +30,10 @@ If you are just including the built files, pixi-alpha-map adds itself to a pixi 
 
 ```js
 PIXI.loader
-    .add('spineCharacter', 'spine-data-1/HERO.json');
+    .add('imageRGB', 'assets/image_rgb.jpg');
+    .add('imageAlpha', 'assets/image_alpha.jpg');
     .load(function (loader, resources) {
-        var animation = new PIXI.alphaMap.AlphaMapSprite(resources.imageRGB.texture, resources.imageAlpha.texture);
+        var alphaMapSprite = new PIXI.alphaMap.AlphaMapSprite(resources.imageRGB.texture, resources.imageAlpha.texture);
 
         // add the sprite to the stage and render...
     });
