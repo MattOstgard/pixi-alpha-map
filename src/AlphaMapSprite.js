@@ -16,10 +16,9 @@ function AlphaMapSprite(texture, alphaTexture)
 {
     PIXI.Sprite.call(this, texture);
 
-    // Create reusable instance of shader
-    if (!PIXI.alphaMap.shader)
-    {
-        PIXI.alphaMap.shader = new alphaMap.AlphaMapShader();
+    // Create reusable instance of the shader
+    if (!PIXI.alphaMap.shader) {
+        PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
     }
 
     /**

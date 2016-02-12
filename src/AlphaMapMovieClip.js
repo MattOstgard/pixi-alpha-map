@@ -14,12 +14,11 @@
  */
 function AlphaMapMovieClip(textures, alphaTexture)
 {
-	PIXI.extras.MovieClip.call(this, textures);
+    PIXI.extras.MovieClip.call(this, textures);
 
-    // Create reusable instance of AlphaMapShader
-    if (!PIXI.alphaMap.shader)
-    {
-        PIXI.alphaMap.shader = new alphaMap.AlphaMapShader();
+    // Create reusable instance of shader and determine which shader to use
+    if (!PIXI.alphaMap.shader) {
+        PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
     }
 
     /**
@@ -28,14 +27,14 @@ function AlphaMapMovieClip(textures, alphaTexture)
      * @member {PIXI.AbstractFilter|PIXI.Shader}
      */
     this.shader = PIXI.alphaMap.shader;
-    
+
     /**
      * The texture that the sprite is using
      *
      * @member {PIXI.Texture}
      * @memberof PIXI.AlphaMapMovieClip#
      */
-	this.alphaTexture = alphaTexture;
+    this.alphaTexture = alphaTexture;
 }
 
 // Constructor

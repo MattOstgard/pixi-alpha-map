@@ -3,11 +3,13 @@
  */
 
 var alphaMap = {
-	AlphaMapSprite: require('./AlphaMapSprite.js'),
-	AlphaMapShader: require('./AlphaMapShader.js'),
-	AlphaMapMovieClip: require('./AlphaMapMovieClip.js')
+    AlphaMapShader: require('./AlphaMapShader.js'),
+    AlphaMapVideoShader: require('./AlphaMapVideoShader.js'),
+    AlphaMapSprite: require('./AlphaMapSprite.js'),
+    AlphaMapMovieClip: require('./AlphaMapMovieClip.js')
 }
 
-alphaMap.shader = new alphaMap.AlphaMapShader();
+alphaMap.shader = null;
+alphaMap.videoShader = new alphaMap.AlphaMapVideoShader();
 
 module.exports = global.PIXI.alphaMap = alphaMap;

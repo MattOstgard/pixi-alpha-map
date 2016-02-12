@@ -5,17 +5,19 @@
  */
 
 var alphaMap = {
-	AlphaMapSprite: require('./AlphaMapSprite.js'),
-	AlphaMapShader: require('./AlphaMapShader.js'),
-	AlphaMapMovieClip: require('./AlphaMapMovieClip.js')
+    AlphaMapShader: require('./AlphaMapShader.js'),
+    AlphaMapVideoShader: require('./AlphaMapVideoShader.js'),
+    AlphaMapSprite: require('./AlphaMapSprite.js'),
+    AlphaMapMovieClip: require('./AlphaMapMovieClip.js')
 }
 
-alphaMap.shader = new alphaMap.AlphaMapShader();
+alphaMap.shader = null;
+alphaMap.videoShader = new alphaMap.AlphaMapVideoShader();
 
 module.exports = global.PIXI.alphaMap = alphaMap;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./AlphaMapMovieClip.js":2,"./AlphaMapShader.js":3,"./AlphaMapSprite.js":4}],2:[function(require,module,exports){
+},{"./AlphaMapMovieClip.js":2,"./AlphaMapShader.js":3,"./AlphaMapSprite.js":4,"./AlphaMapVideoShader.js":5}],2:[function(require,module,exports){
 /**
  * An AlphaMapMovieClip allows the use of two separate images for color and transparency.
  * In most cases this is useful when you want to are using an image format like jpg that does not support transparency.
@@ -32,12 +34,11 @@ module.exports = global.PIXI.alphaMap = alphaMap;
  */
 function AlphaMapMovieClip(textures, alphaTexture)
 {
-	PIXI.extras.MovieClip.call(this, textures);
+    PIXI.extras.MovieClip.call(this, textures);
 
-    // Create reusable instance of AlphaMapShader
-    if (!PIXI.alphaMap.shader)
-    {
-        PIXI.alphaMap.shader = new alphaMap.AlphaMapShader();
+    // Create reusable instance of shader and determine which shader to use
+    if (!PIXI.alphaMap.shader) {
+        PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
     }
 
     /**
@@ -46,14 +47,14 @@ function AlphaMapMovieClip(textures, alphaTexture)
      * @member {PIXI.AbstractFilter|PIXI.Shader}
      */
     this.shader = PIXI.alphaMap.shader;
-    
+
     /**
      * The texture that the sprite is using
      *
      * @member {PIXI.Texture}
      * @memberof PIXI.AlphaMapMovieClip#
      */
-	this.alphaTexture = alphaTexture;
+    this.alphaTexture = alphaTexture;
 }
 
 // Constructor
@@ -146,10 +147,9 @@ function AlphaMapSprite(texture, alphaTexture)
 {
     PIXI.Sprite.call(this, texture);
 
-    // Create reusable instance of shader
-    if (!PIXI.alphaMap.shader)
-    {
-        PIXI.alphaMap.shader = new alphaMap.AlphaMapShader();
+    // Create reusable instance of the shader
+    if (!PIXI.alphaMap.shader) {
+        PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
     }
 
     /**
@@ -186,6 +186,62 @@ AlphaMapSprite.prototype._renderWebGL = function (renderer)
     this.shader.alphaTexture = this.alphaTexture;
     renderer.plugins.sprite.render(this);
 };
+},{}],5:[function(require,module,exports){
+function AlphaMapVideoShader(shaderManager)
+{
+    PIXI.AbstractFilter.call(this,
+        // Vertex shader
+        [
+            'precision lowp float;',
+            'attribute vec2 aVertexPosition;',
+            'attribute vec2 aTextureCoord;',
+            'attribute vec4 aColor;',
+
+            'uniform mat3 projectionMatrix;',
+
+            'varying vec2 vTextureCoord;',
+            'varying vec2 vTextureCoord2;',
+            'varying vec4 vColor;',
+
+            'void main(void){',
+            '   gl_Position = vec4((projectionMatrix * vec3(aVertexPosition, 1.0)).xy, 0.0, 1.0);',
+            '   vTextureCoord = vec2(aTextureCoord.x, aTextureCoord.y * 0.5);',
+            '   vTextureCoord2 = vec2(aTextureCoord.x, (aTextureCoord.y * 0.5) + 0.5);',
+            '   vColor = vec4(aColor.rgb * aColor.a, aColor.a);',
+            '}'
+        ].join('\n'),
+
+        // Fragment shader
+        [
+            'precision lowp float;',
+
+            'varying vec2 vTextureCoord;',
+            'varying vec2 vTextureCoord2;',
+            'varying vec4 vColor;',
+
+            'uniform sampler2D uSampler;',
+
+            'void main(void){',
+
+            '   float alpha = texture2D(uSampler, vTextureCoord).g;',
+            '   vec3 color = texture2D(uSampler, vTextureCoord2).rgb;',
+                // Remap values so that 0.064 is black because on PC nvidia limits the colors to 16-235 for some stupid
+                // reason. To do this right we would have to load a test video, check the black value the video is
+                // outputting and pick an appropriate shader.
+            '    vec4 nvidiaCrushColors = (vec4(color.rgb, alpha) - 0.063) * 1.06723;',
+            '   gl_FragColor = nvidiaCrushColors * vColor;',
+            '}'
+        ].join('\n'),
+
+        // Custom uniforms
+        null
+    );
+}
+
+// Constructor
+AlphaMapVideoShader.prototype = Object.create(PIXI.AbstractFilter.prototype);
+AlphaMapVideoShader.prototype.constructor = AlphaMapVideoShader;
+module.exports = AlphaMapVideoShader;
 },{}]},{},[1])
 
 
