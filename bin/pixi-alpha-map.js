@@ -29,14 +29,14 @@ module.exports = global.PIXI.alphaMap = alphaMap;
  * @class
  * @extends PIXI.extras.MovieClip
  * @memberof PIXI.alphaMap
- * @param textures {PIXI.Texture[]} the RGB (color) textures from the same atlas.
- * @param alphaTexture {PIXI.Texture} the Alpha (transparency) texture.
+ * @param textures {PIXI.Texture[]} the RGB (color) textures.
+ * @param alphaTexture {PIXI.Texture} the Alpha (transparency) textures that correspond to each texture the textures array.
  */
-function AlphaMapMovieClip(textures, alphaTexture)
+function AlphaMapMovieClip(textures, alphaTextures)
 {
     PIXI.extras.MovieClip.call(this, textures);
 
-    // Create reusable instance of shader and determine which shader to use
+    // Create reusable instance of shader
     if (!PIXI.alphaMap.shader) {
         PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
     }
@@ -49,12 +49,12 @@ function AlphaMapMovieClip(textures, alphaTexture)
     this.shader = PIXI.alphaMap.shader;
 
     /**
-     * The texture that the sprite is using
+     * the Alpha (transparency) textures that correspond to each texture the textures array.
      *
      * @member {PIXI.Texture}
      * @memberof PIXI.AlphaMapMovieClip#
      */
-    this.alphaTexture = alphaTexture;
+    this.alphaTextures = alphaTextures;
 }
 
 // Constructor
@@ -72,7 +72,7 @@ module.exports = AlphaMapMovieClip;
 AlphaMapMovieClip.prototype._renderWebGL = function (renderer)
 {
     renderer.setObjectRenderer(renderer.plugins.sprite);
-    this.shader.alphaTexture = this.alphaTexture;
+    this.shader.alphaTexture = this.alphaTextures[this.currentFrame];
     renderer.plugins.sprite.render(this);
 };
 },{}],3:[function(require,module,exports){

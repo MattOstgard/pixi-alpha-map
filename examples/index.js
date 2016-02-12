@@ -72,16 +72,18 @@ Game.prototype.loadComplete = function(loader, resources) {
     
     // Get frame textures
     this.rgbTextures = []
+    this.alphaTextures = []
     for (var frameName in PIXI.loader.resources.fancyRGB.textures) {
         this.rgbTextures.push(PIXI.loader.resources.fancyRGB.textures[frameName]);
+        this.alphaTextures.push(PIXI.loader.resources.fancyAlpha.texture);
     }
 
     //
-    this.rgbTex = this.rgbTextures[20];
-    this.alphaTex = PIXI.loader.resources.fancyAlpha.texture;
+    this.rgbTexture = this.rgbTextures[20];
+    this.alphaTexture = PIXI.loader.resources.fancyAlpha.texture;
     
     // Sprite
-    this.fancySprite = new PIXI.alphaMap.AlphaMapSprite(this.rgbTex, this.alphaTex);
+    this.fancySprite = new PIXI.alphaMap.AlphaMapSprite(this.rgbTexture, this.alphaTexture);
     this.fancySprite.anchor.set(0.5);
     this.fancySprite.x = 250;
     this.fancySprite.y = 100;
@@ -95,7 +97,7 @@ Game.prototype.loadComplete = function(loader, resources) {
     this.stage.addChild(this.fancySpriteText);
     
     // Movieclip
-    this.fancyMC = new PIXI.alphaMap.AlphaMapMovieClip(this.rgbTextures, this.alphaTex);
+    this.fancyMC = new PIXI.alphaMap.AlphaMapMovieClip(this.rgbTextures, this.alphaTextures);
     this.fancyMC.anchor.set(0.5);
     this.fancyMC.x = this.stageWidth - 250;
     this.fancyMC.y = this.center.y;
