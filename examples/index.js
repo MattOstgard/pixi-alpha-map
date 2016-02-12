@@ -61,24 +61,28 @@ Game.prototype.getTime = function() {
 }
 
 Game.prototype.loadComplete = function(loader, resources) {
+    
+    // Get textures
     this.rgbTextures = []
     for (var frameName in PIXI.loader.resources.fancyRGB.textures) {
         this.rgbTextures.push(PIXI.loader.resources.fancyRGB.textures[frameName]);
     }
     this.rgbTex = this.rgbTextures[20];
     this.alphaTex = PIXI.loader.resources.fancyAlpha.texture;
-    this.fancyMC = new PIXI.alphaMap.AlphaMapSprite(this.rgbTex, this.alphaTex);
-    // this.fancyMC = new PIXI.alphaMap.AlphaMapSprite(this.alphaTex, this.rgbTex);
-    // this.fancyMC = new PIXI.extras.MovieClip(rgbTex, alphaTex);
-    // this.fancyMC.shader = new PIXI.alphaMap.AlphaMapShader();
-    // this.fancyMC.shader.alphaTexture = this.alphaTex
+    
+    // Sprite
+    this.fancySprite = new PIXI.alphaMap.AlphaMapSprite(this.rgbTex, this.alphaTex);
+    this.stage.addChild(this.fancySprite);
+    
+    // Movieclip
+    this.fancyMC = new PIXI.alphaMap.AlphaMapMovieClip(this.rgbTextures, this.alphaTex);
     this.fancyMC.anchor.set(0.5);
     this.fancyMC.position = this.center;
     this.fancyMC.scale.set(2);
-    // this.fancyMC.animationSpeed = 15 / 60; // 15 fps
-    // this.fancyMC.loop = true;
+    this.fancyMC.animationSpeed = 15 / 60; // 15 fps
+    this.fancyMC.loop = true;
+    this.fancyMC.play();
     this.stage.addChild(this.fancyMC);
-    // this.fancyMC.play();
     
     // Start the game loop
     this.update();

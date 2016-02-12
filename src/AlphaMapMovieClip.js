@@ -1,5 +1,5 @@
 /**
- * An AlphaMapSprite allows the use of two separate images for color and transparency.
+ * An AlphaMapMovieClip allows the use of two separate images for color and transparency.
  * In most cases this is useful when you want to are using an image format like jpg that does not support transparency.
  *
  * ```js
@@ -7,16 +7,16 @@
  * ```
  *
  * @class
- * @extends PIXI.Sprite
+ * @extends PIXI.extras.MovieClip
  * @memberof PIXI.alphaMap
- * @param texture {PIXI.Texture} the RGB (color) texture.
+ * @param textures {PIXI.Texture[]} the RGB (color) textures from the same atlas.
  * @param alphaTexture {PIXI.Texture} the Alpha (transparency) texture.
  */
-function AlphaMapSprite(texture, alphaTexture)
+function AlphaMapMovieClip(textures, alphaTexture)
 {
-    PIXI.Sprite.call(this, texture);
+	PIXI.extras.MovieClip.call(this, textures);
 
-    // Create reusable instance of shader
+    // Create reusable instance of AlphaMapShader
     if (!PIXI.alphaMap.shader)
     {
         PIXI.alphaMap.shader = new alphaMap.AlphaMapShader();
@@ -28,20 +28,20 @@ function AlphaMapSprite(texture, alphaTexture)
      * @member {PIXI.AbstractFilter|PIXI.Shader}
      */
     this.shader = PIXI.alphaMap.shader;
-
+    
     /**
      * The texture that the sprite is using
      *
      * @member {PIXI.Texture}
-     * @memberof PIXI.AlphaMapSprite#
+     * @memberof PIXI.AlphaMapMovieClip#
      */
-    this.alphaTexture = alphaTexture;
+	this.alphaTexture = alphaTexture;
 }
 
 // Constructor
-AlphaMapSprite.prototype = Object.create(PIXI.Sprite.prototype);
-AlphaMapSprite.prototype.constructor = AlphaMapSprite;
-module.exports = AlphaMapSprite;
+AlphaMapMovieClip.prototype = Object.create(PIXI.extras.MovieClip.prototype);
+AlphaMapMovieClip.prototype.constructor = AlphaMapMovieClip;
+module.exports = AlphaMapMovieClip;
 
 /**
 *
@@ -50,7 +50,7 @@ module.exports = AlphaMapSprite;
 * @param renderer {PIXI.WebGLRenderer}
 * @private
 */
-AlphaMapSprite.prototype._renderWebGL = function (renderer)
+AlphaMapMovieClip.prototype._renderWebGL = function (renderer)
 {
     renderer.setObjectRenderer(renderer.plugins.sprite);
     this.shader.alphaTexture = this.alphaTexture;
