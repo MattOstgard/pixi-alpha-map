@@ -40,7 +40,7 @@ function AlphaMapShader()
 
         // Custom uniforms
         {
-            alphaTexture: { type: 'sampler2D', value: 1 }
+            alphaTexture: { type: 'sampler2D', value: 0 }
         }
     );
 }
