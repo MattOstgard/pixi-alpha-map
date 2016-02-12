@@ -32,7 +32,7 @@ function Game() {
     this.fpsMeter = new FPSMeter();
 
     // Load Background
-    this.backgroundTex = PIXI.Texture.fromImage('assets/Lion_King_Backdrop_25.jpg');
+    this.backgroundTex = PIXI.Texture.fromImage('examples/assets/Lion_King_Backdrop_25.jpg');
     this.background = new PIXI.Sprite(this.backgroundTex);
     this.background.width = this.stageWidth;
     this.background.height = this.stageHeight;
@@ -40,7 +40,7 @@ function Game() {
     this.background.interactive = true;
     
     // Had issues loading videos with the standard loader, so just bypassing it.
-    this.fancyVidTex = PIXI.Texture.fromVideo('assets/fancy_stacked_alpha.mp4');
+    this.fancyVidTex = PIXI.Texture.fromVideo('examples/assets/fancy_stacked_alpha.mp4');
 
     // Watch first tap so we can initialize videos and sounds
     this.gotFirstTap = false;
@@ -60,8 +60,8 @@ function Game() {
     }).bind(this), false);
     
     PIXI.loader
-        .add('fancyRGB', 'assets/fancy_text.json')
-        .add('fancyAlpha', 'assets/fancy_text_alpha.jpg')
+        .add('fancyRGB', 'examples/assets/fancy_text.json')
+        .add('fancyAlpha', 'examples/assets/fancy_text_alpha.jpg')
         .once('complete', this.loadComplete.bind(this))
         .load();
 
