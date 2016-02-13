@@ -1,4 +1,16 @@
 # WORK IN PROGRESS
+## To do:
+- Fix: In the example the video texture will sometimes try to play before touch is registered.
+- Test with browserify.. and learn how to use it :P
+- Clean-up
+- (Maybe) AlphaMapVideo: Make something that extends sprite and handles both opaque and transparent videos on mobile but can also fall back to an image sequence.
+    - Would have to test for correct color output to work around nvidia defaulting to a crushed color range on PC.
+    - See if there is a work around for android lowering background audio when a video element is playing despite there being no audio included and it being muted. Thinking WebM probably works properly here.
+    - Would have to also handle audio with the image sequence.
+    - Might also want to test video playback performance and fall back to image sequence if it is too bad.
+    - Figure out how to determine if iOS device is going to force full screen and fall back to image sequence if it is.
+    - Image sequences should have simple streaming support (onReadyToPlay) that tries to determine if enough future frames are loaded to playback without interruption.
+    - Have an option to discard old image sequence textures after playing to reduce memory usage.
 
 # pixi-alpha-map
 

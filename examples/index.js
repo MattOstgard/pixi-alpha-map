@@ -56,6 +56,10 @@ function Game() {
         // Try to force iOS devices to play inline rather than fullscreen.
         // This is currently (2016-02) still ignored on small form iPhones (not sure about iPhone+)
         this.fancyVidTex.baseTexture.source.setAttribute('webkit-playsinline', 'webkit-playsinline');
+        
+        //
+        this.fancyVidTex.baseTexture.source.defaultMuted = true;
+        this.fancyVidTex.baseTexture.source.mute = true;
         this.fancyVidTex.baseTexture.source.loop = true;
     }).bind(this), false);
     
