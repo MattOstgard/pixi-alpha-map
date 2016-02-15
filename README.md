@@ -24,7 +24,7 @@ If you use browserify you can use pixi-alpha-map like this:
 
 ```js
 var PIXI = require('pixi.js'),
-    spine = require('pixi-alpha-map');
+    alphaMap = require('pixi-alpha-map');
 
 PIXI.loader
     .add('imageRGB', 'assets/image_rgb.jpg');
