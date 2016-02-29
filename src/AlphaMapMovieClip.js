@@ -52,5 +52,6 @@ module.exports = AlphaMapMovieClip;
 AlphaMapMovieClip.prototype._renderWebGL = function (renderer)
 {
     renderer.setObjectRenderer(renderer.plugins.sprite);
+    this.shader.alphaTexture = this.alphaTextures[this.currentFrame];
     renderer.plugins.sprite.render(this);
 };
