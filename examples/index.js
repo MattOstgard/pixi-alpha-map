@@ -66,6 +66,8 @@ function Game() {
     PIXI.loader
         .add('fancyRGB', 'examples/assets/fancy_text.json')
         .add('fancyAlpha', 'examples/assets/fancy_text_alpha.jpg')
+        .add('spinnyRGB', 'examples/assets/spinny_jpg.json')
+        .add('spinnyAlpha', 'examples/assets/spinny_alpha.jpg')
         .once('complete', this.loadComplete.bind(this))
         .load();
 
@@ -80,6 +82,14 @@ Game.prototype.loadComplete = function(loader, resources) {
     for (var frameName in PIXI.loader.resources.fancyRGB.textures) {
         this.rgbTextures.push(PIXI.loader.resources.fancyRGB.textures[frameName]);
         this.alphaTextures.push(PIXI.loader.resources.fancyAlpha.texture);
+    }
+
+    // Get frame textures
+    this.spinnyRGBTextures = []
+    this.spinnyAlphaTextures = []
+    for (var frameName in PIXI.loader.resources.spinnyRGB.textures) {
+        this.spinnyRGBTextures.push(PIXI.loader.resources.spinnyRGB.textures[frameName]);
+        this.spinnyAlphaTextures.push(PIXI.loader.resources.spinnyAlpha.texture);
     }
 
     //
@@ -101,7 +111,7 @@ Game.prototype.loadComplete = function(loader, resources) {
     this.stage.addChild(this.fancySpriteText);
     
     // Movieclip
-    this.fancyMC = new PIXI.alphaMap.AlphaMapMovieClip(this.rgbTextures, this.alphaTextures);
+    this.fancyMC = new PIXI.alphaMap.AlphaMapMovieClip(this.spinnyRGBTextures, this.spinnyAlphaTextures);
     this.fancyMC.anchor.set(0.5);
     this.fancyMC.x = this.stageWidth - 250;
     this.fancyMC.y = this.center.y;
