@@ -72,7 +72,6 @@ module.exports = AlphaMapMovieClip;
 AlphaMapMovieClip.prototype._renderWebGL = function (renderer)
 {
     renderer.setObjectRenderer(renderer.plugins.sprite);
-    this.shader.alphaTexture = this.alphaTextures[this.currentFrame];
     renderer.plugins.sprite.render(this);
 };
 },{}],3:[function(require,module,exports){
@@ -183,7 +182,6 @@ module.exports = AlphaMapSprite;
 AlphaMapSprite.prototype._renderWebGL = function (renderer)
 {
     renderer.setObjectRenderer(renderer.plugins.sprite);
-    this.shader.alphaTexture = this.alphaTexture;
     renderer.plugins.sprite.render(this);
 };
 },{}],5:[function(require,module,exports){
