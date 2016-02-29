@@ -52,6 +52,5 @@ module.exports = AlphaMapSprite;
 AlphaMapSprite.prototype._renderWebGL = function (renderer)
 {
     renderer.setObjectRenderer(renderer.plugins.sprite);
-    this.shader.alphaTexture = this.alphaTexture;
     renderer.plugins.sprite.render(this);
 };
