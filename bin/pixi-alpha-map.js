@@ -11,7 +11,11 @@ var alphaMap = {
     AlphaMapMovieClip: require('./AlphaMapMovieClip.js')
 }
 
-alphaMap.shader = null;
+// Due to a bug in Pixi v3 we have to do mulitple shader instances.
+// Instead of using just one shader, we have to use multiple whenever there is an alpha map texture that is different. 
+alphaMap.shaderTexPairs = [];
+
+// 
 alphaMap.videoShader = new alphaMap.AlphaMapVideoShader();
 
 module.exports = global.PIXI.alphaMap = alphaMap;
@@ -36,9 +40,25 @@ function AlphaMapMovieClip(textures, alphaTextures)
 {
     PIXI.extras.MovieClip.call(this, textures);
 
-    // Create reusable instance of shader
-    if (!PIXI.alphaMap.shader) {
-        PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
+    // Create reusable instance of the shader
+    var shaders = [];
+    for (var i in alphaTextures) {
+        var alphaTexture = alphaTextures[i];
+        var shader = null;
+        for (var i in PIXI.alphaMap.shaderTexPairs) {
+            if (PIXI.alphaMap.shaderTexPairs[i].alphaTexture === alphaTexture) {
+                shader = PIXI.alphaMap.shaderTexPairs[i].shader;
+            }
+        }
+
+        //
+        if (shader === null) {
+            shader = new PIXI.alphaMap.AlphaMapShader();
+            PIXI.alphaMap.shaderTexPairs.push({shader: shader, alphaTexture: alphaTexture});
+        }
+
+        //
+        shaders.push(shader);
     }
 
     /**
@@ -46,7 +66,7 @@ function AlphaMapMovieClip(textures, alphaTextures)
      *
      * @member {PIXI.AbstractFilter|PIXI.Shader}
      */
-    this.shader = PIXI.alphaMap.shader;
+    this.shaders = shaders;
 
     /**
      * the Alpha (transparency) textures that correspond to each texture the textures array.
@@ -71,6 +91,7 @@ module.exports = AlphaMapMovieClip;
 */
 AlphaMapMovieClip.prototype._renderWebGL = function (renderer)
 {
+    this.shader = this.shaders[this.currentFrame];
     renderer.setObjectRenderer(renderer.plugins.sprite);
     this.shader.alphaTexture = this.alphaTextures[this.currentFrame];
     renderer.plugins.sprite.render(this);
@@ -148,8 +169,17 @@ function AlphaMapSprite(texture, alphaTexture)
     PIXI.Sprite.call(this, texture);
 
     // Create reusable instance of the shader
-    if (!PIXI.alphaMap.shader) {
-        PIXI.alphaMap.shader = new PIXI.alphaMap.AlphaMapShader();  
+    var shader = null;
+    for (var i in PIXI.alphaMap.shaderTexPairs) {
+        if (PIXI.alphaMap.shaderTexPairs[i].alphaTexture === alphaTexture) {
+            shader = PIXI.alphaMap.shaderTexPairs[i].shader;
+        }
+    }
+
+    //
+    if (shader === null) {
+        shader = new PIXI.alphaMap.AlphaMapShader();
+        PIXI.alphaMap.shaderTexPairs.push({shader: shader, alphaTexture: alphaTexture});
     }
 
     /**
@@ -157,7 +187,7 @@ function AlphaMapSprite(texture, alphaTexture)
      *
      * @member {PIXI.AbstractFilter|PIXI.Shader}
      */
-    this.shader = PIXI.alphaMap.shader;
+    this.shader = shader;
 
     /**
      * The texture that the sprite is using
